@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="styles.css" />
+	<title>Detalhes</title>
+</head>
+
+<body>
+	<ul>
+		<li>
+			<a href="index.html">Daniflix</a>
+		</li>
+	</ul>
+	<div class="container" id='color'>
+		<div class="title" id="nome"></div>
+		<div id="c2"></div>
+	</div>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+		integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		const getString = window.location.search;
+		const url = new URLSearchParams(getString);
+		const nome = url.get('name');
+		const idade = url.get('age');
+		const categoria = url.get('category');
+
+		var classificacao = idade < 10 ? 'L' : idade < 12 ? '10' : idade < 14 ? '12' : idade < 16 ? '14' : idade < 18 ? '16' : '18';
+		var color = idade < 10 ? 'green' : idade < 12 ? 'blue' : idade < 14 ? 'yellow' : idade < 16 ? 'orange' : idade < 18 ? 'red' : 'black';
+		document.getElementById('color').style.backgroundColor = color;
+
+		axios.get('https://api.themoviedb.org/3/discover/movie?api_key=5417af578f487448df0d4932bc0cc1a5&with_genres=' + categoria + '&language=pt-BR&certification_country=BR&certification.lte=' + classificacao + '&certification.gte=L').then(function (response) {
+			console.log(response);
+			var filmePesquisado = response.data.results;
+			var mostraFilmes = '';
+			console.log(filmePesquisado);
+
+			for (var i = 0; i < filmePesquisado.length; i++) {
+
+				mostraFilmes += '<div class="col">';
+
+				mostraFilmes += '<img class="img-thumbnail" src="https://image.tmdb.org/t/p/w300/' + filmePesquisado[i].poster_path + '">';
+				mostraFilmes += '<br/><br/>';
+				mostraFilmes += '<h2 class="text-muted">' + filmePesquisado[i].title + '</h2><br/>';
+				mostraFilmes += '<br/><br/>';
+				mostraFilmes += filmePesquisado[i].overview;
+				mostraFilmes += '<br/><br/>';
+
+				mostraFilmes += '</div>';
+
+				console.log(filmePesquisado[i].title);
+			}
+
+			document.getElementById('c2').innerHTML = mostraFilmes;
+			document.getElementById('nome').innerHTML = 'Seja bem vinde, ' + nome + '!<br/>Sua classificação é:' + classificacao;
+
+
+		}).catch(function (error) {
+			console.log(error);
+		});
+
+	</script>
+	<div class='clean'></div>
+	<footer>
+		Minhas recomendações de filmes!
+		© Daniflix 2021
+	</footer>
+</body>
+
+</html>
